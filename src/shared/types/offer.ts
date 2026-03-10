@@ -31,7 +31,7 @@ export type Amenity =
   | 'Towels'
   | 'Fridge';
 
-export type Offer = {
+export interface Offer {
   title: string;
   description: string;
   date: Date;
@@ -49,4 +49,4 @@ export type Offer = {
   host: User;
   commentsCount: number;
   location: Location;
-};
+}

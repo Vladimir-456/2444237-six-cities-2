@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { CliApplication } from './cli/cli-application.js';
 import { Command } from './cli/command.interfaсe.js';
 import { GenerateCommand } from './cli/generate.command.js';
