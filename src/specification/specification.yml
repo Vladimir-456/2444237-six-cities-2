@@ -1,0 +1,408 @@
+openapi: 3.0.0
+info:
+  title: "Six cities API"
+  version: "1.0.0"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: Users
+    description: Пользователи
+  - name: Offers
+    description: Предложения
+  - name: Comments
+    description: Комментарии
+
+paths:
+  /register:
+    post:
+      summary: Создать пользователя
+      tags: [Users]
+      requestBody:
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+
+        '422':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Произошла ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /login:
+    post:
+      summary: Авторизация пользователя
+      tags: [Users]
+      requestBody:
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Authorization'
+        required: true
+      responses:
+        '200':
+          description: Пользователь успешно авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+        '401':
+          description: Неверный email или пароль
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Произошла ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      summary: Получить информацию о текущем пользователе
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Пользователь успешно авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Пользователь не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /offers:
+    get:
+      summary: Получить список предложений
+      tags: [Offers]
+      responses:
+        '200':
+          description: Заказы успешно получены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        '500':
+          description: Произошла ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Добавление нового предложения
+      tags: [Offers]
+      requestBody:
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Offer'
+      responses:
+        '201':
+          description: Заказ успешно добавлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        '422':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /offers/{offerId}:
+    put:
+      summary: Редактирование предложения
+      tags: [Offers]
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Offer'
+      responses:
+         '200':
+          description: Предложение успешно обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+
+         '404':
+          description: Предложение не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+         '422':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+         '500':
+          description: Произошла ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Удаление предложения
+      tags: [Offers]
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Предложение успешно удалено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+
+
+  /offers/{offerId}/comments/:
+    get:
+      summary: Получить список комментариев
+      tags: [Comments]
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Комментарии успешно получены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    post:
+      summary: Добавление нового комментария
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      tags: [Comments]
+      requestBody:
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        '201':
+          description: Комментарии успешно добавлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '422':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Произошла ошибка на сервере
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Error message'
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    Authorization:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: 'john.doe@example'
+        password:
+          type: string
+          example: 'qwerty123'
+    User:
+      type: object
+      required: [name, email, password, isPro]
+      properties:
+        name:
+          type: string
+          example: 'John Doe'
+          minLength: 1
+          maxLength: 15
+
+        email:
+          type: string
+          example: 'john.doe@example'
+        avatar:
+          type: string
+          example: 'https://example.com/avatar.jpg'
+        password:
+          type: string
+          example: 'qwerty123'
+          minLength: 6
+          maxLength: 12
+        isPro:
+          type: boolean
+          example: false
+    Offer:
+      type: object
+      required: [title, description, date, city, previewImage, images, isPremium, isFavorite, rating, type, rooms, guests, price, goods, host, commentsCount, location]
+      properties:
+        title:
+          type: string
+          example: 'Apartment in the center of the city'
+        description:
+          type: string
+          example: 'Apartment in the center of the city'
+        date:
+          type: string
+          format: date
+          example: '2026-01-20'
+        city:
+          type: string
+          example: 'New York'
+        previewImage:
+          type: string
+          example: 'https://example.com/preview.jpg'
+        images:
+          type: array
+          items:
+            type: string
+            example: 'https://example.com/image.jpg'
+        isPremium:
+          type: boolean
+          example: true
+        isFavorite:
+          type: boolean
+          example: true
+        rating:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 5
+        type:
+          type: string
+          enum: [apartment, house, room, hotel]
+          example: 'apartment'
+        rooms:
+          type: number
+          example: 3
+          minimum: 1
+          maximum: 10
+        guests:
+          type: number
+          example: 2
+          minimum: 1
+          maximum: 8
+        price:
+          type: number
+          example: 1000
+        features:
+          type: array
+          enum: [Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels, Towels, Fridge]
+          items:
+            type: string
+            example: 'Breakfast'
+        comments:
+          type: number
+          example: 5
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 50.4501
+            longitude:
+              type: number
+              example: 30.5234
+    Comment:
+      type: object
+      required: [text, date, rating, user]
+      properties:
+        text:
+          type: string
+          example: 'Comment text'
+        date:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+        rating:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 5
+        user:
+          type: string
+          example: 'John Doe'
+    NotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Resource not found'
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFound'
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
