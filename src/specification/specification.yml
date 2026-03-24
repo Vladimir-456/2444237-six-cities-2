@@ -98,11 +98,11 @@ paths:
       tags: [Offers]
       responses:
         '200':
-          description: Заказы успешно получены
+          description: Предложения успешно получены
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Offer'
+                $ref: '#/components/schemas/Offers'
         '500':
           description: Произошла ошибка на сервере
           content:
@@ -208,7 +208,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Comment'
+                $ref: '#/components/schemas/Comments'
     post:
       summary: Добавление нового комментария
       parameters:
@@ -226,7 +226,7 @@ paths:
         required: true
       responses:
         '201':
-          description: Комментарии успешно добавлен
+          description: Комментарий успешно добавлен
           content:
             application/json:
               schema:
@@ -256,18 +256,21 @@ components:
         message:
           type: string
           example: 'Error message'
+
     AuthResponse:
       type: object
       properties:
         accessToken:
           type: string
           example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+
     Authorization:
       type: object
       required: [email, password]
       properties:
         email:
           type: string
+          format: email
           example: 'john.doe@example'
         password:
           type: string
@@ -281,9 +284,9 @@ components:
           example: 'John Doe'
           minLength: 1
           maxLength: 15
-
         email:
           type: string
+          format: email
           example: 'john.doe@example'
         avatar:
           type: string
@@ -367,6 +370,11 @@ components:
             longitude:
               type: number
               example: 30.5234
+    Offers:
+      type: array
+      items:
+        $ref: '#/components/schemas/Offer'
+
     Comment:
       type: object
       required: [text, date, rating, user]
@@ -386,12 +394,19 @@ components:
         user:
           type: string
           example: 'John Doe'
+
+    Comments:
+      type: array
+      items:
+        $ref: '#/components/schemas/Comment'
+
     NotFound:
       type: object
       properties:
         message:
           type: string
           example: 'Resource not found'
+
   responses:
     NotFound:
       description: Not found
