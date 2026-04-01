@@ -1,11 +1,11 @@
-import { DocumentType } from '@typegoose/typegoose';
-import { CreateUserDto } from './dto/user-dto.js';
-import { UserServiceInterface } from './user-service.interface.js';
-import { UserEntity, UserModel } from './user.entity.js';
-import { inject, injectable } from 'inversify';
-import { Component } from '../../types/container.js';
-import { Logger } from '../../libs/logger/index.js';
-import { OfferEntity, OfferModel } from '../offer/offer.entity.js';
+import { DocumentType } from "@typegoose/typegoose";
+import { CreateUserDto } from "./dto/user-dto.js";
+import { UserServiceInterface } from "./user-service.interface.js";
+import { UserEntity, UserModel } from "./user.entity.js";
+import { inject, injectable } from "inversify";
+import { Component } from "../../types/container.js";
+import { Logger } from "../../libs/logger/index.js";
+import { OfferEntity, OfferModel } from "../offer/offer.entity.js";
 
 @injectable()
 export class UserService implements UserServiceInterface {
@@ -38,29 +38,28 @@ export class UserService implements UserServiceInterface {
   async findFavoriteOffers(
     userId: number,
   ): Promise<DocumentType<OfferEntity>[]> {
-    const user = await UserModel.findById(userId).populate('favorites').exec();
+    const user = await UserModel.findById(userId).populate("favorites").exec();
 
     return (user?.favorites as DocumentType<OfferEntity>[]) ?? [];
   }
 
-  async updateAndDeleteFavoriteOffer(
+  async toggleFavoriteOffer(
     offerId: string,
     userId: number,
   ): Promise<DocumentType<OfferEntity> | null> {
-    const user = await UserModel.findById(userId).populate('favorites').exec();
+    const user = await UserModel.findById(userId).populate("favorites").exec();
     const offer = await OfferModel.findById(offerId).exec();
     if (!user) {
       return null;
     }
-    const index = user.favorites.findIndex((id) => id.toString() === offerId);
 
-    if (index === -1) {
+    if (user.favorites.find((offer) => offer._id.toString() === offerId)) {
       await UserModel.findByIdAndUpdate(userId, {
-        $push: { favorites: offerId },
+        $pull: { favorites: offerId },
       });
     } else {
       await UserModel.findByIdAndUpdate(userId, {
-        $pull: { favorites: offerId },
+        $push: { favorites: offerId },
       });
     }
 
