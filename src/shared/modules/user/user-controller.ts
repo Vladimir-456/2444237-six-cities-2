@@ -1,15 +1,15 @@
-import { inject } from "inversify";
-import { BaseController } from "../../libs/rest/controller/base-controller.abstract.js";
-import { Component } from "../../types/container.js";
-import { HttpMethod } from "../../libs/rest/index.js";
-import { Request, Response } from "express";
-import { Logger } from "../../libs/logger/index.js";
-import { UserServiceInterface } from "./user-service.interface.js";
-import { StatusCodes } from "http-status-codes";
-import { Config, RestSchema } from "../../libs/config/index.js";
-import { UserRDO } from "./rdo/user.rdo.js";
-import { fillDTO } from "../../helpers/common.js";
-import { HttpError } from "../../libs/rest/errors/http-error.js";
+import { inject } from 'inversify';
+import { BaseController } from '../../libs/rest/controller/base-controller.abstract.js';
+import { Component } from '../../types/container.js';
+import { HttpMethod } from '../../libs/rest/index.js';
+import { Request, Response } from 'express';
+import { Logger } from '../../libs/logger/index.js';
+import { UserServiceInterface } from './user-service.interface.js';
+import { StatusCodes } from 'http-status-codes';
+import { Config, RestSchema } from '../../libs/config/index.js';
+import { UserRDO } from './rdo/user.rdo.js';
+import { fillDTO } from '../../helpers/common.js';
+import { HttpError } from '../../libs/rest/errors/http-error.js';
 
 export class UserController extends BaseController {
   constructor(
@@ -20,13 +20,13 @@ export class UserController extends BaseController {
   ) {
     super(logger);
     this.addRoute({
-      path: "/register",
+      path: '/register',
       method: HttpMethod.Post,
       handler: this.create,
     });
 
     this.addRoute({
-      path: "/login",
+      path: '/login',
       method: HttpMethod.Post,
       handler: this.auth,
     });
@@ -44,7 +44,7 @@ export class UserController extends BaseController {
 
     const result = await this.userService.register(
       req.body,
-      this.config.get("SALT"),
+      this.config.get('SALT'),
     );
     this.created(res, fillDTO(UserRDO, result));
   }
@@ -61,8 +61,8 @@ export class UserController extends BaseController {
 
     throw new HttpError(
       StatusCodes.NOT_IMPLEMENTED,
-      "Not implemented",
-      "UserController",
+      'Not implemented',
+      'UserController',
     );
   }
 }

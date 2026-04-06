@@ -1,16 +1,16 @@
-import { NextFunction, Request, Response } from "express";
-import { ExceptionFilter } from "./exception-filter.interface.js";
-import { StatusCodes } from "http-status-codes";
-import { Component } from "../../../types/container.js";
-import { inject, injectable } from "inversify";
-import { Logger } from "../../logger/index.js";
-import { HttpError } from "../errors/index.js";
-import { createErrorObject } from "../../../helpers/common.js";
+import { NextFunction, Request, Response } from 'express';
+import { ExceptionFilter } from './exception-filter.interface.js';
+import { StatusCodes } from 'http-status-codes';
+import { Component } from '../../../types/container.js';
+import { inject, injectable } from 'inversify';
+import { Logger } from '../../logger/index.js';
+import { HttpError } from '../errors/index.js';
+import { createErrorObject } from '../../../helpers/common.js';
 
 @injectable()
 export class AppExceptionFilter implements ExceptionFilter {
   constructor(@inject(Component.Logger) private readonly logger: Logger) {
-    this.logger.info("AppExceptionFilter was created");
+    this.logger.info('AppExceptionFilter was created');
   }
 
   private handleHttpError(

@@ -1,38 +1,54 @@
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export class OfferRDO {
   @Expose()
-  title: string;
+    title: string;
+
   @Expose()
-  description: string;
+    description: string;
+
   @Expose()
-  date: Date;
+    date: Date;
+
   @Expose()
-  city: string;
+    city: string;
+
   @Expose()
-  imagePreview: string;
+    imagePreview: string;
+
   @Expose()
-  images: string[];
+    images: string[];
+
   @Expose()
-  isPremium: boolean;
+    isPremium: boolean;
+
   @Expose()
-  isFavorite: boolean;
+    isFavorite: boolean;
+
   @Expose()
-  rating: number;
+    rating: number;
+
   @Expose()
-  type: string;
+    type: string;
+
   @Expose()
-  bedrooms: number;
+    bedrooms: number;
+
   @Expose()
-  maxAdults: number;
+    maxAdults: number;
+
   @Expose()
-  price: number;
+    price: number;
+
   @Expose()
-  goods: string[];
+    goods: string[];
+
   @Expose()
-  host: string;
+    host: string;
+
   @Expose()
-  commentsCount: number;
+    commentsCount: number;
+
   @Expose()
-  location: { latitude: number; longitude: number };
+    location: { latitude: number; longitude: number };
 }

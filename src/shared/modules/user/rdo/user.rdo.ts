@@ -1,14 +1,18 @@
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export class UserRDO {
   @Expose()
-  name: string;
+    name: string;
+
   @Expose()
-  email: string;
+    email: string;
+
   @Expose()
-  avatar: string;
+    avatar: string;
+
   @Expose()
-  isPro: boolean;
+    isPro: boolean;
+
   @Expose()
-  favorites: string[];
+    favorites: string[];
 }

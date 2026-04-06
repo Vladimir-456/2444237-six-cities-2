@@ -1,13 +1,13 @@
-import { inject } from "inversify";
-import { BaseController } from "../../libs/rest/controller/base-controller.abstract.js";
-import { Component } from "../../types/container.js";
-import { OfferServiceInterface } from "./offer-service.interface.js";
-import { HttpMethod } from "../../libs/rest/index.js";
-import { Request, Response } from "express";
-import { Logger } from "../../libs/logger/index.js";
-import { fillDTO } from "../../helpers/common.js";
-import { OfferRDO } from "./rdo/offer.rdo.js";
-import { StatusCodes } from "http-status-codes";
+import { inject } from 'inversify';
+import { BaseController } from '../../libs/rest/controller/base-controller.abstract.js';
+import { Component } from '../../types/container.js';
+import { OfferServiceInterface } from './offer-service.interface.js';
+import { HttpMethod } from '../../libs/rest/index.js';
+import { Request, Response } from 'express';
+import { Logger } from '../../libs/logger/index.js';
+import { fillDTO } from '../../helpers/common.js';
+import { OfferRDO } from './rdo/offer.rdo.js';
+import { StatusCodes } from 'http-status-codes';
 
 export class OfferController extends BaseController {
   constructor(
@@ -17,15 +17,15 @@ export class OfferController extends BaseController {
   ) {
     super(logger);
 
-    this.addRoute({ path: "/", method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: "/", method: HttpMethod.Post, handler: this.create });
+    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
     this.addRoute({
-      path: "/:id",
+      path: '/:id',
       method: HttpMethod.Put,
       handler: this.update,
     });
     this.addRoute({
-      path: "/:id",
+      path: '/:id',
       method: HttpMethod.Delete,
       handler: this.delete,
     });

@@ -1,12 +1,12 @@
-import { injectable } from "inversify";
-import { Controller } from "./controller.interface.js";
-import { Response, Router } from "express";
-import { Route } from "../types/route.interface.js";
-import { StatusCodes } from "http-status-codes";
-import { Logger } from "../../logger/index.js";
-import expressAsyncHandler from "express-async-handler";
+import { injectable } from 'inversify';
+import { Controller } from './controller.interface.js';
+import { Response, Router } from 'express';
+import { Route } from '../types/route.interface.js';
+import { StatusCodes } from 'http-status-codes';
+import { Logger } from '../../logger/index.js';
+import expressAsyncHandler from 'express-async-handler';
 
-const DEFAULT_CONTENT_TYPE = "application/json";
+const DEFAULT_CONTENT_TYPE = 'application/json';
 
 @injectable()
 export abstract class BaseController implements Controller {
@@ -26,6 +26,7 @@ export abstract class BaseController implements Controller {
       `Route registered: ${route.method.toUpperCase()} ${route.path}`,
     );
   }
+
   public send<T>(res: Response, statusCode: number, data: T) {
     res.type(DEFAULT_CONTENT_TYPE).status(statusCode).json(data);
   }
