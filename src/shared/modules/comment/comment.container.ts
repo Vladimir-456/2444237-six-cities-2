@@ -5,11 +5,16 @@ import { types } from '@typegoose/typegoose';
 import { CommentServiceInterface } from './comment-service.interface.js';
 import { CommentService } from './comment-service.js';
 
-export function createCommentContainer () {
+export function createCommentContainer() {
   const commentContainer = new Container();
 
-  commentContainer.bind<CommentServiceInterface>(Component.CommentService).to(CommentService).inSingletonScope();
-  commentContainer.bind<types.ModelType<CommentEntity>>(Component.CommentModel).toConstantValue(CommentModel);
+  commentContainer
+    .bind<CommentServiceInterface>(Component.CommentService)
+    .to(CommentService)
+    .inSingletonScope();
+  commentContainer
+    .bind<types.ModelType<CommentEntity>>(Component.CommentModel)
+    .toConstantValue(CommentModel);
 
   return commentContainer;
 }
