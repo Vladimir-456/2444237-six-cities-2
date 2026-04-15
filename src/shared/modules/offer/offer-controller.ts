@@ -8,26 +8,51 @@ import { Logger } from '../../libs/logger/index.js';
 import { fillDTO } from '../../helpers/common.js';
 import { OfferRDO } from './rdo/offer.rdo.js';
 import { StatusCodes } from 'http-status-codes';
+import { ValidateObjectIdMiddleware } from '../../libs/rest/middleware/validate-objectid.middleware.js';
+import { City } from '../../types/offer.js';
+import { HttpError } from '../../libs/rest/errors/http-error.js';
+import { CommentServiceInterface } from '../comment/comment-service.interface.js';
+import { ValidateDTOMiddleware } from '../../libs/rest/middleware/validate-object.middleware.js';
+import { CreateOfferDto } from './dto/offer-dto.js';
+import { UpdateOfferDto } from './dto/update-dto.js';
 
 export class OfferController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.OfferService)
     private readonly offerService: OfferServiceInterface,
+    @inject(Component.CommentService)
+    private readonly commentService: CommentServiceInterface,
   ) {
     super(logger);
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
     this.addRoute({
-      path: '/:id',
-      method: HttpMethod.Put,
-      handler: this.update,
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDTOMiddleware(CreateOfferDto)],
     });
     this.addRoute({
-      path: '/:id',
+      path: '/:offerId',
+      method: HttpMethod.Put,
+      handler: this.update,
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new ValidateDTOMiddleware(UpdateOfferDto),
+      ],
+    });
+    this.addRoute({
+      path: '/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')],
+    });
+    this.addRoute({
+      path: '/:offerId/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')],
     });
   }
 
@@ -83,5 +108,28 @@ export class OfferController extends BaseController {
     }
     const result = await this.offerService.deleteById(offer.id);
     this.noContent(res, fillDTO(OfferRDO, result));
+  }
+
+  public async showPremiumOffers(req: Request, res: Response) {
+    const city = req.params.city as City;
+    const premiumOffers = await this.offerService.findPremiumOffersByCity(city);
+
+    this.ok(res, fillDTO(OfferRDO, premiumOffers));
+  }
+
+  public async getComments(req: Request, res: Response) {
+    const offerId = req.params.offerId;
+    const offer = await this.offerService.findOfferById(offerId as string);
+
+    if (!offer) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with id ${offerId} not found`,
+      );
+    }
+
+    const comments = this.commentService.findByOfferId(offerId as string);
+
+    this.ok(res, fillDTO(OfferRDO, comments));
   }
 }

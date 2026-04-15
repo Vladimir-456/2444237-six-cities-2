@@ -10,6 +10,8 @@ import { Config, RestSchema } from '../../libs/config/index.js';
 import { UserRDO } from './rdo/user.rdo.js';
 import { fillDTO } from '../../helpers/common.js';
 import { HttpError } from '../../libs/rest/errors/http-error.js';
+import { ValidateDTOMiddleware } from '../../libs/rest/middleware/validate-object.middleware.js';
+import { CreateUserDto, LoginUserDTO } from './dto/user-dto.js';
 
 export class UserController extends BaseController {
   constructor(
@@ -23,12 +25,14 @@ export class UserController extends BaseController {
       path: '/register',
       method: HttpMethod.Post,
       handler: this.create,
+      middlewares: [new ValidateDTOMiddleware(CreateUserDto)],
     });
 
     this.addRoute({
       path: '/login',
       method: HttpMethod.Post,
       handler: this.auth,
+      middlewares: [new ValidateDTOMiddleware(LoginUserDTO)],
     });
   }
 
