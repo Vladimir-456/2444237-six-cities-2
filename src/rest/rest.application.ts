@@ -1,12 +1,12 @@
-import { inject, injectable } from "inversify";
-import { Config, RestSchema } from "../shared/libs/config/index.js";
-import { Logger } from "../shared/libs/logger/logger.interface.js";
-import { Component } from "../shared/types/container.js";
-import { DatabaseClient } from "../shared/libs/database-client/index.js";
-import { getMongoUri } from "../shared/helpers/database-client.js";
-import express, { Express } from "express";
-import { Controller } from "../shared/libs/rest/controller/controller.interface.js";
-import { ExceptionFilter } from "../shared/libs/rest/exception-filter/exception-filter.interface.js";
+import { inject, injectable } from 'inversify';
+import { Config, RestSchema } from '../shared/libs/config/index.js';
+import { Logger } from '../shared/libs/logger/logger.interface.js';
+import { Component } from '../shared/types/container.js';
+import { DatabaseClient } from '../shared/libs/database-client/index.js';
+import { getMongoUri } from '../shared/helpers/database-client.js';
+import express, { Express } from 'express';
+import { Controller } from '../shared/libs/rest/controller/controller.interface.js';
+import { ExceptionFilter } from '../shared/libs/rest/exception-filter/exception-filter.interface.js';
 
 @injectable()
 export class RestApplication {
@@ -31,11 +31,11 @@ export class RestApplication {
 
   private async _initDB() {
     const mongoURI = getMongoUri(
-      this.config.get("DB_USER"),
-      this.config.get("DB_PASSWORD"),
-      this.config.get("DB_HOST"),
-      this.config.get("DB_PORT"),
-      this.config.get("DB_NAME"),
+      this.config.get('DB_USER'),
+      this.config.get('DB_PASSWORD'),
+      this.config.get('DB_HOST'),
+      this.config.get('DB_PORT'),
+      this.config.get('DB_NAME'),
     );
 
     return this.databaseClient.connect(mongoURI);
@@ -46,13 +46,13 @@ export class RestApplication {
   }
 
   private async _initControllers() {
-    this.server.use("/offers", this.offerController.router);
-    this.server.use("/users", this.userController.router);
-    this.server.use("/comments", this.commentController.router);
+    this.server.use('/offers', this.offerController.router);
+    this.server.use('/users', this.userController.router);
+    this.server.use('/comments', this.commentController.router);
   }
 
   private async _initServer() {
-    const port = this.config.get("PORT");
+    const port = this.config.get('PORT');
     this.server.listen(port);
   }
 
@@ -61,12 +61,12 @@ export class RestApplication {
   }
 
   public async init() {
-    this.logger.info("Application initialization");
-    this.logger.info(`GET value from env $PORT: ${this.config.get("PORT")}`);
+    this.logger.info('Application initialization');
+    this.logger.info(`GET value from env $PORT: ${this.config.get('PORT')}`);
 
-    this.logger.info("Init app-level middleware");
+    this.logger.info('Init app-level middleware');
     await this._initMiddleware();
-    this.logger.info("App-level middleware initialization completed");
+    this.logger.info('App-level middleware initialization completed');
 
     await this._initServer();
     await this._initControllers();
@@ -74,11 +74,11 @@ export class RestApplication {
     await this.__initExceptionFilters();
 
     this.logger.info(
-      `🚀 Server started on http://localhost:${this.config.get("PORT")}`,
+      `🚀 Server started on http://localhost:${this.config.get('PORT')}`,
     );
 
-    this.logger.info("Database initialization");
+    this.logger.info('Database initialization');
     await this._initDB();
-    this.logger.info("Init database completed");
+    this.logger.info('Init database completed');
   }
 }

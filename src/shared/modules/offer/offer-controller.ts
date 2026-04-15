@@ -65,7 +65,6 @@ export class OfferController extends BaseController {
 
   public async create(req: Request, res: Response): Promise<void> {
     const existOffer = await this.offerService.findOfferById(req.body.id);
-    console.log(req.body);
 
     if (existOffer) {
       const error = new Error(`Offer with id ${req.body.id} already exists`);
