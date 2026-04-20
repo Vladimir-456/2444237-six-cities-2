@@ -1,7 +1,28 @@
+import {
+  IsDateString,
+  IsMongoId,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
+import { CommentDTOValidationMessage } from './comment-dto.messages.js';
+
 export class CommentDto {
-  text!: string;
-  offerId!: string;
-  author!: string;
-  rating!: number;
-  date!: Date;
+  @MinLength(5, { message: CommentDTOValidationMessage.text.min })
+  @MaxLength(1024, { message: CommentDTOValidationMessage.text.max })
+    text!: string;
+
+  @IsMongoId({ message: CommentDTOValidationMessage.offerId.isMongoId })
+    offerId!: string;
+
+  @IsMongoId({ message: CommentDTOValidationMessage.author.isMongoId })
+    author!: string;
+
+  @Min(1, { message: CommentDTOValidationMessage.rating.min })
+  @Max(5, { message: CommentDTOValidationMessage.rating.max })
+    rating!: number;
+
+  @IsDateString({}, { message: CommentDTOValidationMessage.date.isDate })
+    date!: Date;
 }
