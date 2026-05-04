@@ -1,14 +1,14 @@
-import { NextFunction, Request, Response } from "express";
-import { ExceptionFilter } from "../../libs/rest/exception-filter/exception-filter.interface.js";
-import { BaseUserException } from "./index.js";
-import { Logger } from "../../libs/logger/index.js";
-import { Component } from "../../types/container.js";
-import { inject, injectable } from "inversify";
+import { NextFunction, Request, Response } from 'express';
+import { ExceptionFilter } from '../../libs/rest/exception-filter/exception-filter.interface.js';
+import { BaseUserException } from './index.js';
+import { Logger } from '../../libs/logger/index.js';
+import { Component } from '../../types/container.js';
+import { inject, injectable } from 'inversify';
 
 @injectable()
 export class AuthExceptionFilter implements ExceptionFilter {
   constructor(@inject(Component.Logger) private readonly logger: Logger) {
-    this.logger.info("AuthExceptionFilter was created");
+    this.logger.info('AuthExceptionFilter was created');
   }
 
   public catch(
@@ -24,7 +24,7 @@ export class AuthExceptionFilter implements ExceptionFilter {
     this.logger.error(`[AuthModule] ${error.message}`, error);
 
     res.status(error.httpStatusCode).json({
-      type: "AUTHORIZATION",
+      type: 'AUTHORIZATION',
       error: error.message,
     });
   }

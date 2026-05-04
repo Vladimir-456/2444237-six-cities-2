@@ -1,18 +1,18 @@
-import { inject } from "inversify";
-import { BaseController } from "../../libs/rest/controller/base-controller.abstract.js";
-import { Component } from "../../types/container.js";
-import { HttpMethod } from "../../libs/rest/index.js";
-import { Request, Response } from "express";
-import { Logger } from "../../libs/logger/index.js";
-import { UserServiceInterface } from "./user-service.interface.js";
-import { StatusCodes } from "http-status-codes";
-import { Config, RestSchema } from "../../libs/config/index.js";
-import { LoggedUserRDO, UserRDO } from "./rdo/user.rdo.js";
-import { fillDTO } from "../../helpers/common.js";
-import { HttpError } from "../../libs/rest/errors/http-error.js";
-import { ValidateDTOMiddleware } from "../../libs/rest/middleware/validate-object.middleware.js";
-import { CreateUserDto, LoginUserDTO } from "./dto/user-dto.js";
-import { AuthServiceInterface, UserNotFoundException } from "../auth/index.js";
+import { inject } from 'inversify';
+import { BaseController } from '../../libs/rest/controller/base-controller.abstract.js';
+import { Component } from '../../types/container.js';
+import { HttpMethod } from '../../libs/rest/index.js';
+import { Request, Response } from 'express';
+import { Logger } from '../../libs/logger/index.js';
+import { UserServiceInterface } from './user-service.interface.js';
+import { StatusCodes } from 'http-status-codes';
+import { Config, RestSchema } from '../../libs/config/index.js';
+import { LoggedUserRDO, UserRDO } from './rdo/user.rdo.js';
+import { fillDTO } from '../../helpers/common.js';
+import { HttpError } from '../../libs/rest/errors/http-error.js';
+import { ValidateDTOMiddleware } from '../../libs/rest/middleware/validate-object.middleware.js';
+import { CreateUserDto, LoginUserDTO } from './dto/user-dto.js';
+import { AuthServiceInterface, UserNotFoundException } from '../auth/index.js';
 
 export class UserController extends BaseController {
   constructor(
@@ -25,27 +25,27 @@ export class UserController extends BaseController {
   ) {
     super(logger);
     this.addRoute({
-      path: "/register",
+      path: '/register',
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [new ValidateDTOMiddleware(CreateUserDto)],
     });
 
     this.addRoute({
-      path: "/login",
+      path: '/login',
       method: HttpMethod.Post,
       handler: this.auth,
       middlewares: [new ValidateDTOMiddleware(LoginUserDTO)],
     });
 
     this.addRoute({
-      path: "/:userId/avatar",
+      path: '/:userId/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
     });
 
     this.addRoute({
-      path: "/login",
+      path: '/login',
       method: HttpMethod.Get,
       handler: this.checkAuthenticate,
     });
@@ -63,7 +63,7 @@ export class UserController extends BaseController {
 
     const result = await this.userService.register(
       req.body,
-      this.config.get("SALT"),
+      this.config.get('SALT'),
     );
     this.created(res, fillDTO(UserRDO, result));
   }
@@ -94,8 +94,8 @@ export class UserController extends BaseController {
     if (!user) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
-        "Unauthorized",
-        "UserController",
+        'Unauthorized',
+        'UserController',
       );
     }
     this.ok(res, fillDTO(LoggedUserRDO, user));

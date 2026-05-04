@@ -1,14 +1,14 @@
-import { inject, injectable } from "inversify";
-import { CreateOfferDto } from "./dto/offer-dto.js";
-import { OfferServiceInterface } from "./offer-service.interface.js";
-import { OfferEntity } from "./offer.entity.js";
-import { Component } from "../../types/container.js";
-import { Logger } from "../../libs/logger/index.js";
-import { City, UpdateOfferDto } from "./dto/update-dto.js";
-import { DocumentType, types } from "@typegoose/typegoose";
-import { CommentEntity } from "../comment/comment.entity.js";
-import { Types } from "mongoose";
-import { DocumentExists } from "../../libs/rest/types/document-exists.interface.js";
+import { inject, injectable } from 'inversify';
+import { CreateOfferDto } from './dto/offer-dto.js';
+import { OfferServiceInterface } from './offer-service.interface.js';
+import { OfferEntity } from './offer.entity.js';
+import { Component } from '../../types/container.js';
+import { Logger } from '../../libs/logger/index.js';
+import { City, UpdateOfferDto } from './dto/update-dto.js';
+import { DocumentType, types } from '@typegoose/typegoose';
+import { CommentEntity } from '../comment/comment.entity.js';
+import { Types } from 'mongoose';
+import { DocumentExists } from '../../libs/rest/types/document-exists.interface.js';
 
 @injectable()
 export class OfferService implements OfferServiceInterface, DocumentExists {
@@ -27,7 +27,7 @@ export class OfferService implements OfferServiceInterface, DocumentExists {
   }
 
   async findOfferById(id: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findById(id).populate("host").exec();
+    return this.offerModel.findById(id).populate('host').exec();
   }
 
   async exists(documentId: string): Promise<boolean> {
@@ -51,7 +51,7 @@ export class OfferService implements OfferServiceInterface, DocumentExists {
   async recalcRating(offerId: string): Promise<void> {
     const stats = await this.commentModel.aggregate([
       { $match: { offerId: new Types.ObjectId(offerId) } },
-      { $group: { _id: "$offerId", avgRating: { $avg: "$rating" } } },
+      { $group: { _id: '$offerId', avgRating: { $avg: '$rating' } } },
     ]);
 
     const avg = stats[0]?.avgRating ?? 0;
@@ -64,7 +64,7 @@ export class OfferService implements OfferServiceInterface, DocumentExists {
   }
 
   async find(): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel.find().populate("host").exec();
+    return this.offerModel.find().populate('host').exec();
   }
 
   async findPremiumOffersByCity(
@@ -72,7 +72,7 @@ export class OfferService implements OfferServiceInterface, DocumentExists {
   ): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find({ city, isPremium: true })
-      .populate("host")
+      .populate('host')
       .exec();
   }
 

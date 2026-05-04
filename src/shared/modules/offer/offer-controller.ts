@@ -1,23 +1,23 @@
-import { inject } from "inversify";
-import { BaseController } from "../../libs/rest/controller/base-controller.abstract.js";
-import { Component } from "../../types/container.js";
-import { OfferServiceInterface } from "./offer-service.interface.js";
-import { HttpMethod } from "../../libs/rest/index.js";
-import { Request, Response } from "express";
-import { Logger } from "../../libs/logger/index.js";
-import { fillDTO } from "../../helpers/common.js";
-import { OfferRDO } from "./rdo/offer.rdo.js";
-import { StatusCodes } from "http-status-codes";
-import { ValidateObjectIdMiddleware } from "../../libs/rest/middleware/validate-objectid.middleware.js";
-import { City } from "../../types/offer.js";
-import { CommentServiceInterface } from "../comment/comment-service.interface.js";
-import { ValidateDTOMiddleware } from "../../libs/rest/middleware/validate-object.middleware.js";
-import { CreateOfferDto } from "./dto/offer-dto.js";
-import { UpdateOfferDto } from "./dto/update-dto.js";
-import { DocumentExistsMiddleware } from "../../libs/rest/middleware/document-exists.middleware.js";
-import { DocumentExists } from "../../libs/rest/types/document-exists.interface.js";
-import { PrivateRouteMiddleware } from "../../libs/rest/middleware/private-route.middleware.js";
-import { UserServiceInterface } from "../user/user-service.interface.js";
+import { inject } from 'inversify';
+import { BaseController } from '../../libs/rest/controller/base-controller.abstract.js';
+import { Component } from '../../types/container.js';
+import { OfferServiceInterface } from './offer-service.interface.js';
+import { HttpMethod } from '../../libs/rest/index.js';
+import { Request, Response } from 'express';
+import { Logger } from '../../libs/logger/index.js';
+import { fillDTO } from '../../helpers/common.js';
+import { OfferRDO } from './rdo/offer.rdo.js';
+import { StatusCodes } from 'http-status-codes';
+import { ValidateObjectIdMiddleware } from '../../libs/rest/middleware/validate-objectid.middleware.js';
+import { City } from '../../types/offer.js';
+import { CommentServiceInterface } from '../comment/comment-service.interface.js';
+import { ValidateDTOMiddleware } from '../../libs/rest/middleware/validate-object.middleware.js';
+import { CreateOfferDto } from './dto/offer-dto.js';
+import { UpdateOfferDto } from './dto/update-dto.js';
+import { DocumentExistsMiddleware } from '../../libs/rest/middleware/document-exists.middleware.js';
+import { DocumentExists } from '../../libs/rest/types/document-exists.interface.js';
+import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
+import { UserServiceInterface } from '../user/user-service.interface.js';
 
 export class OfferController extends BaseController {
   constructor(
@@ -31,9 +31,9 @@ export class OfferController extends BaseController {
   ) {
     super(logger);
 
-    this.addRoute({ path: "/", method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({
-      path: "/",
+      path: '/',
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
@@ -42,33 +42,33 @@ export class OfferController extends BaseController {
       ],
     });
     this.addRoute({
-      path: "/:offerId",
+      path: '/:offerId',
       method: HttpMethod.Put,
       handler: this.update,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware("offerId"),
+        new ValidateObjectIdMiddleware('offerId'),
         new ValidateDTOMiddleware(UpdateOfferDto),
-        new DocumentExistsMiddleware("offerId", "offer", this.offerService),
+        new DocumentExistsMiddleware('offerId', 'offer', this.offerService),
       ],
     });
     this.addRoute({
-      path: "/:offerId",
+      path: '/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware("offerId"),
-        new DocumentExistsMiddleware("offerId", "offer", this.offerService),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware('offerId', 'offer', this.offerService),
       ],
     });
     this.addRoute({
-      path: "/:offerId/comments",
+      path: '/:offerId/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
       middlewares: [
-        new ValidateObjectIdMiddleware("offerId"),
-        new DocumentExistsMiddleware("offerId", "offer", this.offerService),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware('offerId', 'offer', this.offerService),
       ],
     });
   }
