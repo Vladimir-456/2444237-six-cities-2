@@ -1,16 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
-import { Middleware } from '../index.js';
 import multer, { diskStorage } from 'multer';
 import { extension } from 'mime-types';
 import * as crypto from 'node:crypto';
+import { Middleware } from './middleware.interface.js';
 
 export class UploadFileMiddleware implements Middleware {
   constructor(
-    private readonly fieldName: string,
-    private readonly uploadDirectory: string,
+    private uploadDirectory: string,
+    private fieldName: string,
   ) {}
 
-  execute(req: Request, res: Response, next: NextFunction): void {
+  public async execute(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    console.log(this.uploadDirectory);
+    console.log(this.fieldName);
     const storage = diskStorage({
       destination: this.uploadDirectory,
       filename: (_req, file, callback) => {
@@ -19,6 +25,8 @@ export class UploadFileMiddleware implements Middleware {
         callback(null, `${filename}.${fileExtention}`);
       },
     });
+
+    console.log(storage);
 
     const uploadSingleFileMiddleware = multer({ storage }).single(
       this.fieldName,

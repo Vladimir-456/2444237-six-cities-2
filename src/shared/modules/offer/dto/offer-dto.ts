@@ -72,7 +72,7 @@ export class CreateOfferDto {
   @IsArray({ message: OfferDTOValidationMessage.goods.isArray })
     goods!: Amenity[];
 
-  @IsObject({ message: OfferDTOValidationMessage.host.isObject })
+  @IsString({ message: OfferDTOValidationMessage.host.isObject })
     host!: string;
 
   @IsInt({ message: OfferDTOValidationMessage.commentsCount.isInt })

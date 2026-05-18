@@ -31,7 +31,12 @@ export class CommentService implements CommentServiceInterface {
   public async findByOfferId(
     offerId: string,
   ): Promise<DocumentType<CommentEntity>[]> {
-    return this.commentModel.find({ offerId }).populate('author');
+    return this.commentModel
+      .find({ offerId })
+      .populate('author')
+      .limit(50)
+      .sort({ date: -1 })
+      .exec();
   }
 
   public async deleteByOfferId(offerId: string): Promise<number> {

@@ -6,6 +6,7 @@ import { inject, injectable } from 'inversify';
 import { Component } from '../../types/container.js';
 import { Logger } from '../../libs/logger/index.js';
 import { OfferEntity } from '../offer/offer.entity.js';
+import { DEFAULT_AVATAR_FILE_NAME } from './user.constant.js';
 
 @injectable()
 export class UserService implements UserServiceInterface {
@@ -18,7 +19,7 @@ export class UserService implements UserServiceInterface {
     dto: CreateUserDto,
     salt: string,
   ): Promise<DocumentType<UserEntity>> {
-    const user = new UserEntity(dto);
+    const user = new UserEntity({ ...dto, avatar: DEFAULT_AVATAR_FILE_NAME });
     user.setPassword(dto.password, salt);
 
     const result = await UserModel.create(user);
@@ -38,8 +39,10 @@ export class UserService implements UserServiceInterface {
   async findFavoriteOffers(
     userId: number,
   ): Promise<DocumentType<OfferEntity>[]> {
-    const user = await UserModel.findById(userId).populate('favorites').exec();
-
+    const user = await this.userModel
+      .findById(userId)
+      .populate('favorites')
+      .exec();
     return (user?.favorites as DocumentType<OfferEntity>[]) ?? [];
   }
 

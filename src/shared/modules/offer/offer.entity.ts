@@ -5,7 +5,7 @@ import {
   prop,
   Ref,
 } from '@typegoose/typegoose';
-import { Amenity, City, HousingType } from '../../types/offer.js';
+import { Amenity, City, HousingType, Location } from '../../types/offer.js';
 import { UserEntity } from '../user/user.entity.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
@@ -17,10 +17,6 @@ export interface OfferEntity extends defaultClasses.Base {}
     timestamps: true,
   },
 })
-class Location {
-  public latitude!: number;
-  public longitude!: number;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class OfferEntity extends defaultClasses.TimeStamps {
@@ -104,7 +100,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({ required: true })
   public commentsCount!: number;
 
-  @prop({ _id: false, type: () => Location, required: true })
+  @prop({ _id: false, required: true })
   public location!: Location;
 }
 

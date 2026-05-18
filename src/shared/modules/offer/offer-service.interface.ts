@@ -15,5 +15,5 @@ export interface OfferServiceInterface {
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   decCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   findPremiumOffersByCity(city: City): Promise<DocumentType<OfferEntity>[]>;
-  find(): Promise<DocumentType<OfferEntity>[]>;
+  find(limit: number): Promise<DocumentType<OfferEntity>[]>;
 }
