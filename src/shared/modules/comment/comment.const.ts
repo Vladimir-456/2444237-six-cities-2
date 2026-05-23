@@ -1,0 +1,1 @@
+export const DISPLAY_COMMENT_COUNT = 50;

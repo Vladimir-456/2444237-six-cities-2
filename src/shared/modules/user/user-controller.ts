@@ -53,8 +53,8 @@ export class UserController extends BaseController {
       handler: this.uploadAvatar,
       middlewares: [
         new UploadFileMiddleware(
-          'avatar',
           this.config.get('UPLOAD_FILE_DIRECTORY'),
+          'avatar',
         ),
       ],
     });

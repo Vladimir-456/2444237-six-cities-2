@@ -9,6 +9,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { CommentEntity } from '../comment/comment.entity.js';
 import { Types } from 'mongoose';
 import { DocumentExists } from '../../libs/rest/types/document-exists.interface.js';
+import { DISPLAY_PREMIUM_OFFERS_COUNT } from './offer.const.js';
 
 @injectable()
 export class OfferService implements OfferServiceInterface, DocumentExists {
@@ -73,7 +74,7 @@ export class OfferService implements OfferServiceInterface, DocumentExists {
     return this.offerModel
       .find({ city, isPremium: true })
       .sort({ date: -1 })
-      .limit(3)
+      .limit(DISPLAY_PREMIUM_OFFERS_COUNT)
       .populate('host')
       .exec();
   }

@@ -18,6 +18,7 @@ import { DocumentExistsMiddleware } from '../../libs/rest/middleware/document-ex
 import { DocumentExists } from '../../libs/rest/types/document-exists.interface.js';
 import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
+import { CommentRDO } from '../comment/rdo/comment-rdo.js';
 
 export class OfferController extends BaseController {
   constructor(
@@ -170,6 +171,8 @@ export class OfferController extends BaseController {
 
     const comments = await this.commentService.findByOfferId(offerId as string);
 
-    this.ok(res, fillDTO(OfferRDO, comments));
+    console.log(comments);
+
+    this.ok(res, fillDTO(CommentRDO, comments));
   }
 }
