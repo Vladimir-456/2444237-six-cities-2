@@ -160,6 +160,9 @@ export class OfferController extends BaseController {
   public async showPremiumOffers(req: Request, res: Response) {
     const city = req.params.city as City;
     const premiumOffers = await this.offerService.findPremiumOffersByCity(city);
+
+    console.log(premiumOffers);
+
     this.ok(res, fillDTO(OfferRDO, premiumOffers));
   }
 
@@ -167,6 +170,9 @@ export class OfferController extends BaseController {
     const offerId = req.params.offerId;
 
     const comments = await this.commentService.findByOfferId(offerId as string);
+
+    console.log(comments);
+
     this.ok(res, fillDTO(CommentRDO, comments));
   }
 }
