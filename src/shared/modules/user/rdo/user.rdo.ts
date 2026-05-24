@@ -17,6 +17,38 @@ export class UserRDO {
     favorites: string[];
 }
 
+export class UserFavoriteOfferRDO {
+  @Expose()
+    title: string;
+
+  @Expose()
+    date: Date;
+
+  @Expose()
+    city: string;
+
+  @Expose()
+    type: string;
+
+  @Expose()
+    price: number;
+
+  @Expose()
+    isFavorite: boolean;
+
+  @Expose()
+    imagePreview: string;
+
+  @Expose()
+    isPremium: boolean;
+
+  @Expose()
+    rating: number;
+
+  @Expose()
+    commentsCount: number;
+}
+
 export class LoggedUserRDO {
   @Expose()
   public email: string;

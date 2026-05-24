@@ -7,7 +7,11 @@ import { Logger } from '../../libs/logger/index.js';
 import { UserServiceInterface } from './user-service.interface.js';
 import { StatusCodes } from 'http-status-codes';
 import { Config, RestSchema } from '../../libs/config/index.js';
-import { LoggedUserRDO, UserRDO } from './rdo/user.rdo.js';
+import {
+  LoggedUserRDO,
+  UserFavoriteOfferRDO,
+  UserRDO,
+} from './rdo/user.rdo.js';
 import { fillDTO } from '../../helpers/common.js';
 import { HttpError } from '../../libs/rest/errors/http-error.js';
 import { ValidateDTOMiddleware } from '../../libs/rest/middleware/validate-object.middleware.js';
@@ -95,7 +99,7 @@ export class UserController extends BaseController {
     }
     const favorites = await this.userService.findFavoriteOffers(user.id);
 
-    this.ok(res, favorites);
+    this.ok(res, fillDTO(UserFavoriteOfferRDO, favorites));
   }
 
   public async auth(req: Request, res: Response) {

@@ -19,6 +19,7 @@ import { DocumentExists } from '../../libs/rest/types/document-exists.interface.
 import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
 import { CommentRDO } from '../comment/rdo/comment-rdo.js';
+import { MAX_DISPLAY_OFFERS_COUNT } from './offer.const.js';
 
 export class OfferController extends BaseController {
   constructor(
@@ -89,7 +90,7 @@ export class OfferController extends BaseController {
   }
 
   public async index(req: Request, res: Response) {
-    const limit = Number(req.params.limit) || 60;
+    const limit = Number(req.params.limit) || MAX_DISPLAY_OFFERS_COUNT;
     const offers = await this.offerService.find(limit);
     let favoritesIds: string[] = [];
 
@@ -161,8 +162,6 @@ export class OfferController extends BaseController {
     const city = req.params.city as City;
     const premiumOffers = await this.offerService.findPremiumOffersByCity(city);
 
-    console.log(premiumOffers);
-
     this.ok(res, fillDTO(OfferRDO, premiumOffers));
   }
 
@@ -170,8 +169,6 @@ export class OfferController extends BaseController {
     const offerId = req.params.offerId;
 
     const comments = await this.commentService.findByOfferId(offerId as string);
-
-    console.log(comments);
 
     this.ok(res, fillDTO(CommentRDO, comments));
   }

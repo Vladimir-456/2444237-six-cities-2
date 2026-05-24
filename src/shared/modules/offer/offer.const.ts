@@ -1,1 +1,2 @@
 export const DISPLAY_PREMIUM_OFFERS_COUNT = 3;
+export const MAX_DISPLAY_OFFERS_COUNT = 60;
