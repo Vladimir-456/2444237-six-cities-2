@@ -18,6 +18,8 @@ import { DocumentExistsMiddleware } from '../../libs/rest/middleware/document-ex
 import { DocumentExists } from '../../libs/rest/types/document-exists.interface.js';
 import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
+import { CommentRDO } from '../comment/rdo/comment-rdo.js';
+import { MAX_DISPLAY_OFFERS_COUNT } from './offer.const.js';
 
 export class OfferController extends BaseController {
   constructor(
@@ -63,6 +65,20 @@ export class OfferController extends BaseController {
       ],
     });
     this.addRoute({
+      path: '/premium',
+      method: HttpMethod.Get,
+      handler: this.showPremiumOffers,
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.getDetailOffers,
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware('offerId', 'offer', this.offerService),
+      ],
+    });
+    this.addRoute({
       path: '/:offerId/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
@@ -74,7 +90,8 @@ export class OfferController extends BaseController {
   }
 
   public async index(req: Request, res: Response) {
-    const offers = await this.offerService.find();
+    const limit = Number(req.params.limit) || MAX_DISPLAY_OFFERS_COUNT;
+    const offers = await this.offerService.find(limit);
     let favoritesIds: string[] = [];
 
     if (req.tokenPayload) {
@@ -105,9 +122,16 @@ export class OfferController extends BaseController {
 
     const result = await this.offerService.createOffer({
       ...req.body,
-      userId: req.tokenPayload.id,
+      host: req.tokenPayload.id,
     });
     this.created(res, fillDTO(OfferRDO, result));
+  }
+
+  public async getDetailOffers(req: Request, res: Response) {
+    const offer = await this.offerService.findOfferById(
+      req.params.offerId as string,
+    );
+    this.ok(res, fillDTO(OfferRDO, offer));
   }
 
   public async update(req: Request, res: Response) {
@@ -144,8 +168,8 @@ export class OfferController extends BaseController {
   public async getComments(req: Request, res: Response) {
     const offerId = req.params.offerId;
 
-    const comments = this.commentService.findByOfferId(offerId as string);
+    const comments = await this.commentService.findByOfferId(offerId as string);
 
-    this.ok(res, fillDTO(OfferRDO, comments));
+    this.ok(res, fillDTO(CommentRDO, comments));
   }
 }

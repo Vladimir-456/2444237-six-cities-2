@@ -29,3 +29,7 @@ export function fillDTO<T, V>(dto: ClassConstructor<T>, plainObject: V) {
 export function createErrorObject(message: string) {
   return { error: message };
 }
+
+export function getFullServerPath(host: string, port: number) {
+  return `http://${host}:${port}`;
+}

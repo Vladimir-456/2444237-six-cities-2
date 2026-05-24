@@ -1,10 +1,12 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { Controller } from './controller.interface.js';
 import { Response, Router } from 'express';
 import { Route } from '../types/route.interface.js';
 import { StatusCodes } from 'http-status-codes';
 import { Logger } from '../../logger/index.js';
 import expressAsyncHandler from 'express-async-handler';
+import { Component } from '../../../types/container.js';
+import { PathTransformer } from '../../transform/path-transformer.js';
 
 const DEFAULT_CONTENT_TYPE = 'application/json';
 
@@ -15,6 +17,9 @@ export abstract class BaseController implements Controller {
   constructor(protected readonly logger: Logger) {
     this._router = Router();
   }
+
+  @inject(Component.PathTransformer)
+  protected readonly pathTransformer: PathTransformer;
 
   get router(): Router {
     return this._router;
@@ -37,7 +42,10 @@ export abstract class BaseController implements Controller {
   }
 
   public send<T>(res: Response, statusCode: number, data: T) {
-    res.type(DEFAULT_CONTENT_TYPE).status(statusCode).json(data);
+    const modifiedData = this.pathTransformer.execute(
+      data as Record<string, unknown>,
+    );
+    res.type(DEFAULT_CONTENT_TYPE).status(statusCode).json(modifiedData);
   }
 
   public created<T>(res: Response, data: T) {

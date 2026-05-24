@@ -9,6 +9,7 @@ import {
 } from '../shared/libs/database-client/index.js';
 import { ExceptionFilter } from '../shared/libs/rest/exception-filter/exception-filter.interface.js';
 import { AppExceptionFilter } from '../shared/libs/rest/exception-filter/app-exception-filter.js';
+import { PathTransformer } from '../shared/libs/transform/path-transformer.js';
 
 export function createRestContainer() {
   const restApplicationContainer = new Container();
@@ -31,6 +32,10 @@ export function createRestContainer() {
   restApplicationContainer
     .bind<ExceptionFilter>(Component.ExceptionFilter)
     .to(AppExceptionFilter)
+    .inSingletonScope();
+  restApplicationContainer
+    .bind(Component.PathTransformer)
+    .to(PathTransformer)
     .inSingletonScope();
 
   return restApplicationContainer;

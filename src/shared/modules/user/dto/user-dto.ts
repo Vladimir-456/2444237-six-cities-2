@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsBoolean, IsEmail, MaxLength, MinLength } from 'class-validator';
 import { UserDTOValidationMessage } from './user-dto.messages.js';
 
 export class CreateUserDto {
@@ -14,9 +8,6 @@ export class CreateUserDto {
 
   @IsEmail({}, { message: UserDTOValidationMessage.email.isEmail })
   public email: string;
-
-  @IsString({ message: UserDTOValidationMessage.avatar.isString })
-  public avatar: string;
 
   @MinLength(6, { message: UserDTOValidationMessage.password.min })
   @MaxLength(12, { message: UserDTOValidationMessage.password.max })

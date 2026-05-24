@@ -6,6 +6,7 @@ import { CommentDto } from './dto/comment-dto.js';
 import { CommentEntity } from './comment.entity.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import { OfferServiceInterface } from '../offer/offer-service.interface.js';
+import { DISPLAY_COMMENT_COUNT } from './comment.const.js';
 
 @injectable()
 export class CommentService implements CommentServiceInterface {
@@ -31,7 +32,11 @@ export class CommentService implements CommentServiceInterface {
   public async findByOfferId(
     offerId: string,
   ): Promise<DocumentType<CommentEntity>[]> {
-    return this.commentModel.find({ offerId }).populate('author');
+    return this.commentModel
+      .find({ offerId })
+      .limit(DISPLAY_COMMENT_COUNT)
+      .sort({ date: -1 })
+      .exec();
   }
 
   public async deleteByOfferId(offerId: string): Promise<number> {

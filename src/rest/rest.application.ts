@@ -8,6 +8,7 @@ import express, { Express } from 'express';
 import { Controller } from '../shared/libs/rest/controller/controller.interface.js';
 import { ExceptionFilter } from '../shared/libs/rest/exception-filter/exception-filter.interface.js';
 import { ParseTokenMiddleware } from '../shared/libs/rest/middleware/parse-token.middleware.js';
+import { getFullServerPath } from '../shared/helpers/common.js';
 
 @injectable()
 export class RestApplication {
@@ -57,6 +58,11 @@ export class RestApplication {
       '/upload',
       express.static(this.config.get('UPLOAD_FILE_DIRECTORY')),
     );
+
+    this.server.use(
+      '/static',
+      express.static(this.config.get('STATIC_DIRECTORY_PATH')),
+    );
   }
 
   private async _initControllers() {
@@ -91,7 +97,7 @@ export class RestApplication {
     await this.__initExceptionFilters();
 
     this.logger.info(
-      `🚀 Server started on http://localhost:${this.config.get('PORT')}`,
+      `🚀 Server started on ${getFullServerPath(this.config.get('HOST'), this.config.get('PORT'))}`,
     );
 
     this.logger.info('Database initialization');

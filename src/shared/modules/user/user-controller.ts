@@ -7,13 +7,18 @@ import { Logger } from '../../libs/logger/index.js';
 import { UserServiceInterface } from './user-service.interface.js';
 import { StatusCodes } from 'http-status-codes';
 import { Config, RestSchema } from '../../libs/config/index.js';
-import { LoggedUserRDO, UserRDO } from './rdo/user.rdo.js';
+import {
+  LoggedUserRDO,
+  UserFavoriteOfferRDO,
+  UserRDO,
+} from './rdo/user.rdo.js';
 import { fillDTO } from '../../helpers/common.js';
 import { HttpError } from '../../libs/rest/errors/http-error.js';
 import { ValidateDTOMiddleware } from '../../libs/rest/middleware/validate-object.middleware.js';
 import { CreateUserDto, LoginUserDTO } from './dto/user-dto.js';
 import { AuthServiceInterface, UserNotFoundException } from '../auth/index.js';
 import { PrivateRouteMiddleware } from '../../libs/rest/middleware/private-route.middleware.js';
+import { UploadFileMiddleware } from '../../libs/rest/middleware/upload-file.middleware.js';
 
 export class UserController extends BaseController {
   constructor(
@@ -40,9 +45,22 @@ export class UserController extends BaseController {
     });
 
     this.addRoute({
+      path: '/:userId/favorite',
+      method: HttpMethod.Get,
+      handler: this.getFavorites,
+      middlewares: [new PrivateRouteMiddleware()],
+    });
+
+    this.addRoute({
       path: '/:userId/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
+      middlewares: [
+        new UploadFileMiddleware(
+          this.config.get('UPLOAD_FILE_DIRECTORY'),
+          'avatar',
+        ),
+      ],
     });
 
     this.addRoute({
@@ -68,6 +86,20 @@ export class UserController extends BaseController {
       this.config.get('SALT'),
     );
     this.created(res, fillDTO(UserRDO, result));
+  }
+
+  public async getFavorites(req: Request, res: Response) {
+    const user = await this.userService.findById(req.tokenPayload.id);
+    if (!user) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController',
+      );
+    }
+    const favorites = await this.userService.findFavoriteOffers(user.id);
+
+    this.ok(res, fillDTO(UserFavoriteOfferRDO, favorites));
   }
 
   public async auth(req: Request, res: Response) {
