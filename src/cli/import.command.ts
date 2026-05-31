@@ -56,7 +56,6 @@ export class ImportCommand implements Command {
   }
 
   private async onImportedLine(line: string, resolve: () => void) {
-    console.log(line);
     const offer = createOffer(line);
     await this.saveOffer(offer);
     resolve();
