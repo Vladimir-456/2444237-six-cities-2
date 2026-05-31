@@ -74,11 +74,6 @@ export class UserService implements UserServiceInterface {
     offerId: string,
     userId: string,
   ): Promise<DocumentType<UserEntity> | null> {
-    const user = await UserModel.findById(userId).populate('favorites').exec();
-    if (!user) {
-      return null;
-    }
-
     const result = await UserModel.findByIdAndUpdate(
       userId,
       { $pull: { favorites: new mongoose.Types.ObjectId(offerId) } },

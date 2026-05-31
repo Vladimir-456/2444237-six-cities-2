@@ -11,11 +11,17 @@ import { ConsoleLogger } from '../shared/libs/logger/console.logger.js';
 import { OfferService } from '../shared/modules/offer/offer-service.js';
 import { UserService } from '../shared/modules/user/user-service.js';
 import { Offer } from '../shared/types/offer.js';
-import { Command } from './command.interfaсe.js';
 import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './const.cli.js';
-import { OfferEntity } from '../shared/modules/offer/offer.entity.js';
-import { UserEntity } from '../shared/modules/user/user.entity.js';
-import { CommentEntity } from '../shared/modules/comment/comment.entity.js';
+import {
+  OfferEntity,
+  OfferModel,
+} from '../shared/modules/offer/offer.entity.js';
+import { UserEntity, UserModel } from '../shared/modules/user/user.entity.js';
+import {
+  CommentEntity,
+  CommentModel,
+} from '../shared/modules/comment/comment.entity.js';
+import { Command } from './command.interface.js';
 
 export class ImportCommand implements Command {
   private salt: string;
@@ -29,12 +35,6 @@ export class ImportCommand implements Command {
 
   constructor() {
     this.logger = new ConsoleLogger();
-    this.userService = new UserService(this.logger, this.userModel);
-    this.offerService = new OfferService(
-      this.logger,
-      this.offerModel,
-      this.commentModel,
-    );
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
@@ -42,7 +42,21 @@ export class ImportCommand implements Command {
     return '--import';
   }
 
+  private initModels() {
+    this.userModel = UserModel;
+    this.offerModel = OfferModel;
+    this.commentModel = CommentModel;
+
+    this.userService = new UserService(this.logger, this.userModel);
+    this.offerService = new OfferService(
+      this.logger,
+      this.offerModel,
+      this.commentModel,
+    );
+  }
+
   private async onImportedLine(line: string, resolve: () => void) {
+    console.log(line);
     const offer = createOffer(line);
     await this.saveOffer(offer);
     resolve();
@@ -53,11 +67,12 @@ export class ImportCommand implements Command {
   }
 
   private async saveOffer(offer: Offer) {
+    const { id: _id, host, ...offerData } = offer;
     const user = await this.userService.register(
-      { ...offer.host, password: DEFAULT_USER_PASSWORD },
+      { ...host, password: DEFAULT_USER_PASSWORD },
       this.salt,
     );
-    await this.offerService.createOffer({ ...offer, host: user.id });
+    await this.offerService.createOffer({ ...offerData, host: user.id });
   }
 
   public async execute(
@@ -72,6 +87,8 @@ export class ImportCommand implements Command {
     this.salt = salt;
 
     await this.databaseClient.connect(dbURI);
+
+    this.initModels();
 
     const fileReader = new TSVFileReader(filename.trim());
 
