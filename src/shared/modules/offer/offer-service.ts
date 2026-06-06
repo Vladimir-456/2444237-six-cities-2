@@ -107,9 +107,13 @@ export class OfferService implements OfferServiceInterface, DocumentExists {
     userId: string,
   ): Promise<DocumentType<UserEntity> | null> {
     const result = await this.userModel
-      .findByIdAndUpdate(userId, {
-        $addToSet: { favorites: new mongoose.Types.ObjectId(offerId) },
-      })
+      .findByIdAndUpdate(
+        userId,
+        {
+          $addToSet: { favorites: new mongoose.Types.ObjectId(offerId) },
+        },
+        { new: true },
+      )
       .exec();
 
     return result;
